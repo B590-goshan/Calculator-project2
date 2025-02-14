@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Application Title -->
+    <string name="app_name">SimpleCalculator</string>
+
+    <!-- Default Display Text -->
+    <string name="initial_display">0</string>
+
+    <!-- Button Labels -->
+    <string name="button_reset">C</string>
+    <string name="button_toggle_sign">+/-</string>
+    <string name="button_modulus">%</string>
+    <string name="button_divide">/</string>
+
+    <string name="button_7">7</string>
+    <string name="button_8">8</string>
+    <string name="button_9">9</string>
+    <string name="button_multiply">X</string>
+
+    <string name="button_4">4</string>
+    <string name="button_5">5</string>
+    <string name="button_6">6</string>
+    <string name="button_subtract">-</string>
+
+    <string name="button_1">1</string>
+    <string name="button_2">2</string>
+    <string name="button_3">3</string>
+    <string name="button_add">+</string>
+
+    <string name="button_0">0</string>
+    <string name="button_decimal">.</string>
+    <string name="button_equal">=</string>
+</resources>

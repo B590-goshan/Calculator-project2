@@ -70,6 +70,15 @@
                 android:text="/"
                 android:textSize="30sp"
                 app:cornerRadius="0dp"/>
+            <Button
+                android:id="@+id/btnSin"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="2dp"
+                android:text="sin"
+                android:textSize="30sp"
+                app:cornerRadius="0dp" />
         </TableRow>
 
         <!-- Row 2: Numbers 7, 8, 9, Multiplication -->
@@ -114,6 +123,15 @@
                 android:text="X"
                 android:textSize="30sp"
                 app:cornerRadius="0dp"/>
+            <Button
+                android:id="@+id/btnCos"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="2dp"
+                android:text="cos"
+                android:textSize="30sp"
+                app:cornerRadius="0dp" />
         </TableRow>
 
         <!-- Row 3: Numbers 4, 5, 6, Subtraction -->
@@ -156,6 +174,15 @@
                 android:layout_weight="1"
                 android:layout_margin="2dp"
                 android:text="-"
+                android:textSize="30sp"
+                app:cornerRadius="0dp"/>
+            <Button
+                android:id="@+id/btnTan"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="2dp"
+                android:text="tan"
                 android:textSize="30sp"
                 app:cornerRadius="0dp"/>
         </TableRow>
@@ -202,6 +229,15 @@
                 android:text="+"
                 android:textSize="30sp"
                 app:cornerRadius="0dp"/>
+            <Button
+                android:id="@+id/btnLog10"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="2dp"
+                android:text="Log10"
+                android:textSize="30sp"
+                app:cornerRadius="0dp"/>
         </TableRow>
 
         <!-- Row 5: Number 0 (double width), Decimal Point, Equals -->
@@ -215,7 +251,7 @@
                 android:layout_span="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:layout_margin="2dp"
                 android:text="0"
                 android:textSize="30sp"
@@ -236,6 +272,15 @@
                 android:layout_weight="1"
                 android:layout_margin="2dp"
                 android:text="="
+                android:textSize="30sp"
+                app:cornerRadius="0dp"/>
+            <Button
+                android:id="@+id/btnLn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="2dp"
+                android:text="ln"
                 android:textSize="30sp"
                 app:cornerRadius="0dp"/>
         </TableRow>

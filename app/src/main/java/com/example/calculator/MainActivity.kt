@@ -32,6 +32,13 @@ class MainActivity : AppCompatActivity() {
 
         screenDisplay = findViewById(R.id.screenDisplay)
 
+        if (savedInstanceState != null) {
+            screenDisplay.text = savedInstanceState.getString("displayText", "0")
+            storedValue = savedInstanceState.getDouble("storedValue", 0.0)
+            selectedOperation = savedInstanceState.getString("selectedOperation")
+            isFreshOperation = savedInstanceState.getBoolean("isFreshOperation", true)
+        }
+
         // Numeric and decimal point buttons
         val btnNum0: Button = findViewById(R.id.btnNum0)
         val btnNum1: Button = findViewById(R.id.btnNum1)
@@ -130,6 +137,13 @@ class MainActivity : AppCompatActivity() {
         logAndSetListener(findViewById(R.id.btnLn)) { computeScientificFunction("ln") }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("displayText", screenDisplay.text.toString())
+        outState.putDouble("storedValue", storedValue)
+        outState.putString("selectedOperation", selectedOperation)
+        outState.putBoolean("isFreshOperation", isFreshOperation)
+    }
 
     private fun logAndSetListener(button: Button?, action: () -> Unit) {
         button?.setOnClickListener {

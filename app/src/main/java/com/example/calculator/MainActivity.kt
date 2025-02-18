@@ -267,6 +267,11 @@ class MainActivity : AppCompatActivity() {
      */
     @SuppressLint("DefaultLocale")
     private fun computeScientificFunction(func: String) {
+        // If a scientific function is used after an arithmetic result, continue using the result
+        if (isFreshOperation) {
+            isFreshOperation = false  // Reset flag
+        }
+
         val value = screenDisplay.text.toString().toDoubleOrNull() ?: run {
             screenDisplay.text = getString(R.string.error_text)
             return
@@ -283,9 +288,16 @@ class MainActivity : AppCompatActivity() {
             "tan" -> kotlin.math.tan(Math.toRadians(value))
             "Log 10" -> kotlin.math.log10(value)
             "ln" -> kotlin.math.ln(value)
-            else -> value
+            else -> {
+                Log.e("Calculator", "Unknown function: $func")
+                return
+            }
         }
-        screenDisplay.text = String.format("%.6f", result)
+
+        // Ensure fresh operation state so the next number clears the screen
+        isFreshOperation = true
+        screenDisplay.text = String.format(getString(R.string.formatted_number), result)
+
         Log.d("Calculator", "Function executed: $func, Result: $result")
     }
 }

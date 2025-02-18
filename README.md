@@ -1,6 +1,7 @@
 # Calculator
 
 \# Project 2
+
 This is a basic calculator application designed for Android using Kotlin and XML.
 It emulates the functionality of a typical smartphone calculator, enabling users to effortlessly perform fundamental arithmetic calculations.
 

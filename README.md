@@ -33,10 +33,10 @@ Below is a walkthrough demonstrating the app’s functionality:
 
 ## Notes
 
-1. Ensuring consistent number formatting → Used String.format("%.6f", result) instead of toString().
-2. Handling invalid scientific calculations → Prevented operations like log10(0), ln(-5), and division by zero.
-3. Preventing multiple decimals → Blocked multiple . entries in the same number.
-4. Losing input on screen rotation → Used onSaveInstanceState() to store and restore input.
+1. Ensuring consistent number formatting - Used String.format("%.6f", result) instead of toString().
+2. Handling invalid scientific calculations - Prevented operations like log10(0), ln(-5), and division by zero.
+3. Preventing multiple decimals - Blocked multiple . entries in the same number.
+4. Losing input on screen rotation - Used onSaveInstanceState() to store and restore input.
 
 ## **License**
 © 2025 Gokul Kaarthick Shanmugam

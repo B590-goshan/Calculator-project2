@@ -1,6 +1,6 @@
 # Calculator
 
-\# Project 1
+\# Project 2
 
 This is a basic calculator application designed for Android using Kotlin and XML.
 It emulates the functionality of a typical smartphone calculator, enabling users to effortlessly perform fundamental arithmetic calculations.
@@ -16,13 +16,15 @@ The following **core functionalities** have been implemented:
 * Users can compute percentages using the `%` button.  
 * Users see real-time updates of their input in the top `TextView`.  
 * Decimal numbers are supported via the `.` button.  
-* Users can enter continuous calculations without needing to press `=` after each operation.  
+* Users can enter continuous calculations without needing to press `=` after each operation.
+* Users can perform sin, cos, tan, log10, and ln scientific calculations.
 
 ### **Additional Enhancements:**  
 
-* Division by zero is managed gracefully by displaying `"Error"` instead of crashing the app.  
-* Prevents unnecessary leading zeros (e.g., entering `0005` is automatically formatted as `5`).  
-* Real-time calculations are updated dynamically as the user enters numbers and operators.  
+* Full Persistence IO on Screen Rotation : Users will have retained input and results when the screen rotates on every orientations.
+* Every button press is logged in LogCat for debugging and tracking.
+* Preventing Multiple Decimal Points
+* Enhanced UI and proper error-handling with Scientific Buttons in Landscape Mode
 
 ## **Demo Walkthrough**  
 
@@ -30,14 +32,12 @@ Below is a walkthrough demonstrating the app’s functionality:
 
 <img src='calculator.gif' title='Calculator Demo Walkthrough' width='50%' alt='Demo Walkthrough' />  
 
-## **Challenges & Fixes**  
+## Notes
 
-### **Layout Issues**  
-GridLayout wasn’t properly expanding, causing some buttons to be misaligned.  
-
-### **Handling Edge Cases**  
-- **ZeroDivisionError**: It will displays `"Error"` and doesnt crash.  
-- **Decimal Point Validation**: Multiple decimal points in a single number input.  
+1. Ensuring consistent number formatting - Used String.format("%.6f", result) instead of toString().
+2. Handling invalid scientific calculations - Prevented operations like log10(0), ln(-5), and division by zero.
+3. Preventing multiple decimals - Blocked multiple . entries in the same number.
+4. Losing input on screen rotation - Used onSaveInstanceState() to store and restore input.
 
 ## **License**
 © 2025 Gokul Kaarthick Shanmugam

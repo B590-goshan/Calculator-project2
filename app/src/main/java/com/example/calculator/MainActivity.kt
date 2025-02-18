@@ -1,7 +1,9 @@
 package com.example.calculator
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 
@@ -30,6 +32,13 @@ class MainActivity : AppCompatActivity() {
 
         screenDisplay = findViewById(R.id.screenDisplay)
 
+        if (savedInstanceState != null) {
+            screenDisplay.text = savedInstanceState.getString("displayText", "0")
+            storedValue = savedInstanceState.getDouble("storedValue", 0.0)
+            selectedOperation = savedInstanceState.getString("selectedOperation")
+            isFreshOperation = savedInstanceState.getBoolean("isFreshOperation", true)
+        }
+
         // Numeric and decimal point buttons
         val btnNum0: Button = findViewById(R.id.btnNum0)
         val btnNum1: Button = findViewById(R.id.btnNum1)
@@ -53,10 +62,18 @@ class MainActivity : AppCompatActivity() {
         val btnAddOp: Button = findViewById(R.id.btnAddOp)
         val btnEqualOp: Button = findViewById(R.id.btnEqualOp)
 
+        // Scientific Calculation
+        val btnSin: Button? = findViewById(R.id.btnSin)
+        val btnCos: Button? = findViewById(R.id.btnCos)
+        val btnTan: Button? = findViewById(R.id.btnTan)
+        val btnLog10: Button? = findViewById(R.id.btnLog10)
+        val btnLn: Button? = findViewById(R.id.btnLn)
+
         // Assign listener to numeric buttons
-        val numberClickListener = { view: android.view.View ->
+        val numberClickListener: (android.view.View) -> Unit = { view: android.view.View ->
             val button = view as Button
             appendNumber(button.text.toString())
+            Log.d("Calculator", "Button clicked: ${button.text}")
         }
 
         // Apply click listeners to numbers and decimal button
@@ -81,6 +98,58 @@ class MainActivity : AppCompatActivity() {
         btnReset.setOnClickListener { resetCalculator() }
         btnToggleSign.setOnClickListener { changeSign() }
         btnModulus.setOnClickListener { convertToPercentage() }
+
+        // Apply click listeners for Scientific Operations (only in landscape mode)
+        btnSin?.setOnClickListener { computeScientificFunction("sin") }
+        btnCos?.setOnClickListener { computeScientificFunction("cos") }
+        btnTan?.setOnClickListener { computeScientificFunction("tan") }
+        btnLog10?.setOnClickListener { computeScientificFunction("Log 10") }
+        btnLn?.setOnClickListener { computeScientificFunction("ln") }
+
+        // Numeric Buttons
+        logAndSetListener(findViewById(R.id.btnNum0)) { appendNumber("0") }
+        logAndSetListener(findViewById(R.id.btnNum1)) { appendNumber("1") }
+        logAndSetListener(findViewById(R.id.btnNum2)) { appendNumber("2") }
+        logAndSetListener(findViewById(R.id.btnNum3)) { appendNumber("3") }
+        logAndSetListener(findViewById(R.id.btnNum4)) { appendNumber("4") }
+        logAndSetListener(findViewById(R.id.btnNum5)) { appendNumber("5") }
+        logAndSetListener(findViewById(R.id.btnNum6)) { appendNumber("6") }
+        logAndSetListener(findViewById(R.id.btnNum7)) { appendNumber("7") }
+        logAndSetListener(findViewById(R.id.btnNum8)) { appendNumber("8") }
+        logAndSetListener(findViewById(R.id.btnNum9)) { appendNumber("9") }
+        logAndSetListener(findViewById(R.id.btnDecimal)) { appendNumber(".") }
+
+        // Operation Buttons
+        logAndSetListener(findViewById(R.id.btnAddOp)) { operationPressed("+") }
+        logAndSetListener(findViewById(R.id.btnSubtractOp)) { operationPressed("-") }
+        logAndSetListener(findViewById(R.id.btnMultiplyOp)) { operationPressed("*") }
+        logAndSetListener(findViewById(R.id.btnDivideOp)) { operationPressed("/") }
+        logAndSetListener(findViewById(R.id.btnEqualOp)) { computeResult() }
+        logAndSetListener(findViewById(R.id.btnReset)) { resetCalculator() }
+        logAndSetListener(findViewById(R.id.btnToggleSign)) { changeSign() }
+        logAndSetListener(findViewById(R.id.btnModulus)) { convertToPercentage() }
+
+        // Scientific Functions (Only in Landscape Mode)
+        logAndSetListener(findViewById(R.id.btnSin)) { computeScientificFunction("sin") }
+        logAndSetListener(findViewById(R.id.btnCos)) { computeScientificFunction("cos") }
+        logAndSetListener(findViewById(R.id.btnTan)) { computeScientificFunction("tan") }
+        logAndSetListener(findViewById(R.id.btnLog10)) { computeScientificFunction("log 10") }
+        logAndSetListener(findViewById(R.id.btnLn)) { computeScientificFunction("ln") }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("displayText", screenDisplay.text.toString())
+        outState.putDouble("storedValue", storedValue)
+        outState.putString("selectedOperation", selectedOperation)
+        outState.putBoolean("isFreshOperation", isFreshOperation)
+    }
+
+    private fun logAndSetListener(button: Button?, action: () -> Unit) {
+        button?.setOnClickListener {
+            Log.d("Calculator", "Button clicked: ${button.text}")
+            action()
+        }
     }
 
     /**
@@ -93,18 +162,15 @@ class MainActivity : AppCompatActivity() {
     private fun appendNumber(digit: String) {
         val currentText = screenDisplay.text.toString()
 
-        // Prevent multiple decimals in the same number
-        if (digit == "." && currentText.contains(".")) {
-            return
-        }
-
-        // Clear display if it's a new number or an error message
-        if (isFreshOperation || currentText == "0" || currentText == "Error") {
+        // If a number is pressed after an operation result, clear the screen
+        if (isFreshOperation) {
             screenDisplay.text = ""
             isFreshOperation = false
         }
 
-        // Append the digit to the display
+        // Prevent multiple decimal points in the same number
+        if (digit == "." && currentText.contains(".")) return
+
         screenDisplay.append(digit)
     }
 
@@ -116,13 +182,14 @@ class MainActivity : AppCompatActivity() {
      * @param op The operation (+, -, *, /) pressed.
      */
     private fun operationPressed(op: String) {
-        if (!isFreshOperation) {
-            computeResult()  // Compute pending operations before proceeding
+        // If an operation is pressed right after a result, continue with the last result
+        if (selectedOperation != null && !isFreshOperation) {
+            computeResult()  // Compute previous operation before applying the new one
         }
 
         selectedOperation = op
         storedValue = screenDisplay.text.toString().toDoubleOrNull() ?: 0.0
-        isFreshOperation = true
+        isFreshOperation = true  // Mark as a fresh operation so next number clears the display
     }
 
     /**
@@ -144,7 +211,7 @@ class MainActivity : AppCompatActivity() {
                 "-" -> storedValue - secondOperand
                 "*" -> storedValue * secondOperand
                 "/" -> if (secondOperand == 0.0) {
-                    screenDisplay.text = "Error"  // Set display to "Error" on divide by zero
+                    screenDisplay.text = getString(R.string.error_text)  // Set display to "Error" on divide by zero
                     return  // Stop execution here
                 } else {
                     storedValue / secondOperand
@@ -153,7 +220,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             // Ensure we don't assign "Error" to storedValue
-            screenDisplay.text = result.toString()
+            screenDisplay.text = screenDisplay.context.getString(R.string.formatted_number, result)
             storedValue = result
             isFreshOperation = true
             selectedOperation = null
@@ -173,22 +240,64 @@ class MainActivity : AppCompatActivity() {
     /**
      * Toggles the sign of the displayed number (positive to negative).
      */
+    @SuppressLint("DefaultLocale")
     private fun changeSign() {
         if (screenDisplay.text.toString() == "Error") {
             return  // Can't toggle sign of "Error"
         }
         val currentValue = screenDisplay.text.toString().toDoubleOrNull() ?: 0.0
-        screenDisplay.text = (currentValue * -1).toString()
+        screenDisplay.text = String.format("%.6f", currentValue * -1)
     }
 
     /**
      * Converts the displayed number into a percentage.
      */
+    @SuppressLint("DefaultLocale")
     private fun convertToPercentage() {
         if (screenDisplay.text.toString() == "Error") {
             return  // Can't perform percentage on "Error"
         }
         val currentValue = screenDisplay.text.toString().toDoubleOrNull() ?: 0.0
-        screenDisplay.text = (currentValue / 100).toString()
+        screenDisplay.text = String.format("%.6f", currentValue / 100)
+    }
+
+    /**
+     * Handles scientific function button presses.
+     * - Computes trigonometric and logarithmic values based on the current input.
+     */
+    @SuppressLint("DefaultLocale")
+    private fun computeScientificFunction(func: String) {
+        // If a scientific function is used after an arithmetic result, continue using the result
+        if (isFreshOperation) {
+            isFreshOperation = false  // Reset flag
+        }
+
+        val value = screenDisplay.text.toString().toDoubleOrNull() ?: run {
+            screenDisplay.text = getString(R.string.error_text)
+            return
+        }
+
+        if (value <= 0 && (func == "log10" || func == "ln")) {
+            screenDisplay.text = getString(R.string.error_text)
+            return
+        }
+
+        val result = when (func.replace(" ", "").lowercase()) {
+            "sin" -> kotlin.math.sin(Math.toRadians(value))
+            "cos" -> kotlin.math.cos(Math.toRadians(value))
+            "tan" -> kotlin.math.tan(Math.toRadians(value))
+            "log10" -> kotlin.math.log10(value)
+            "ln" -> kotlin.math.ln(value)
+            else -> {
+                Log.e("Calculator", "Unknown function: $func")
+                return
+            }
+        }
+
+        // Ensure fresh operation state so the next number clears the screen
+        isFreshOperation = true
+        screenDisplay.text = String.format(getString(R.string.formatted_number), result)
+
+        Log.d("Calculator", "Function executed: $func, Result: $result")
     }
 }

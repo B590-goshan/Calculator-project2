@@ -277,16 +277,16 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        if (value <= 0 && (func == "log 10" || func == "ln")) {
+        if (value <= 0 && (func == "log10" || func == "ln")) {
             screenDisplay.text = getString(R.string.error_text)
             return
         }
 
-        val result = when (func.lowercase()) {
+        val result = when (func.replace(" ", "").lowercase()) {
             "sin" -> kotlin.math.sin(Math.toRadians(value))
             "cos" -> kotlin.math.cos(Math.toRadians(value))
             "tan" -> kotlin.math.tan(Math.toRadians(value))
-            "Log 10" -> kotlin.math.log10(value)
+            "log10" -> kotlin.math.log10(value)
             "ln" -> kotlin.math.ln(value)
             else -> {
                 Log.e("Calculator", "Unknown function: $func")
